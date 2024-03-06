@@ -199,4 +199,109 @@ function AutoBind(fn, name, descriptor) {
 }
 if (btn)
     btn.addEventListener("click", new_obj.getMessage);
+// when we write new_obj.getMessage in the eventListener, the getter on it gets
+//triggered which returns the boundFn
 /*--------------------------------*/
+//Practicing the AutoBind Decorator
+class Human {
+    constructor() {
+        this.species = "Homo Sapiens";
+    }
+    walk() {
+        console.log(`The animal with ${this.species} can walk`);
+    }
+}
+__decorate([
+    AutoBindPrac
+], Human.prototype, "walk", null);
+class Persons extends Human {
+    constructor(name) {
+        super();
+        this.name = name;
+    }
+}
+const new_person = new Persons("faheem");
+const btn_person = document.getElementById("btn-person");
+if (btn_person)
+    btn_person.addEventListener("click", new_person.walk);
+function AutoBindPrac(fn, name, descriptor) {
+    const originalMethod = descriptor.value;
+    const modifiedDescriptor = {
+        configurable: true,
+        enumerable: false,
+        get() {
+            const boundFn = originalMethod.bind(this);
+            return boundFn;
+        },
+    };
+    return modifiedDescriptor;
+}
+const validation_obj = {};
+function Required(fn, propName) {
+    var _a;
+    const constructor_name = fn.constructor.name;
+    if (!validation_obj[constructor_name])
+        validation_obj[constructor_name] = {};
+    validation_obj[constructor_name][propName] = [
+        ...((_a = validation_obj[constructor_name][propName]) !== null && _a !== void 0 ? _a : []),
+        "required",
+    ];
+}
+function Positive(fn, propName) {
+    var _a;
+    const constructor_name = fn.constructor.name;
+    if (!validation_obj[constructor_name])
+        validation_obj[constructor_name] = {};
+    validation_obj[constructor_name][propName] = [
+        ...((_a = validation_obj[constructor_name][propName]) !== null && _a !== void 0 ? _a : []),
+        "positive",
+    ];
+}
+function validate(objInfo, identifier) {
+    const to_be_validated = validation_obj[identifier];
+    if (!to_be_validated)
+        return true;
+    let is_valid = true;
+    for (let prop in to_be_validated) {
+        for (let key of to_be_validated[prop]) {
+            switch (key) {
+                case "required":
+                    is_valid = is_valid && !!objInfo[prop];
+                    break;
+                case "positive":
+                    is_valid = is_valid && objInfo[prop] > 0;
+                    break;
+            }
+        }
+    }
+    return is_valid;
+}
+//Validation with decorators
+class Course {
+    constructor(t, p) {
+        this.title = t;
+        this.price = p;
+    }
+}
+__decorate([
+    Required
+], Course.prototype, "title", void 0);
+__decorate([
+    Positive
+], Course.prototype, "price", void 0);
+const form = document.querySelector("form");
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const titleEl = document.getElementById("title");
+    const priceEl = document.getElementById("price");
+    const title = titleEl.value;
+    const price = +priceEl.value;
+    const obj = {
+        title,
+        price,
+    };
+    if (!validate(obj, "Course"))
+        return alert("Either the title or price is invalid");
+    const course = new Course(title, price);
+    console.log(course);
+});
