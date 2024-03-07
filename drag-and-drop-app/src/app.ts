@@ -1,5 +1,3 @@
-// Code goes here!
-
 //Auto Bind Decorator
 
 function AutoBind(_: any, __: string, descriptor: PropertyDescriptor) {
@@ -22,9 +20,9 @@ class Project {
   clientEl: HTMLTemplateElement;
   hostEl: HTMLDivElement;
   formEl: HTMLFormElement;
-  titleInpEl: HTMLInputElement;
-  descriptionInpEl: HTMLInputElement;
-  peopleInpEl: HTMLInputElement;
+  titleInpElement: HTMLInputElement;
+  descriptionInpElement: HTMLInputElement;
+  peopleInpElement: HTMLInputElement;
 
   constructor() {
     this.clientEl = document.getElementById(
@@ -37,13 +35,15 @@ class Project {
     this.formEl = importedNode.firstElementChild as HTMLFormElement;
     this.formEl.id = "user-input";
 
-    this.titleInpEl = this.formEl.querySelector("#title")! as HTMLInputElement;
+    this.titleInpElement = this.formEl.querySelector(
+      "#title"
+    )! as HTMLInputElement;
 
-    this.descriptionInpEl = this.formEl.querySelector(
+    this.descriptionInpElement = this.formEl.querySelector(
       "#description"
     )! as HTMLInputElement;
 
-    this.peopleInpEl = this.formEl.querySelector(
+    this.peopleInpElement = this.formEl.querySelector(
       "#people"
     )! as HTMLInputElement;
 
@@ -55,14 +55,36 @@ class Project {
     this.hostEl.insertAdjacentElement("afterbegin", this.formEl);
   }
 
+  private addListener() {
+    this.formEl.addEventListener("submit", this.handleSubmit);
+  }
+
   @AutoBind
   private handleSubmit(e: Event) {
     e.preventDefault();
-    console.log(this.titleInpEl.value);
+    const userInput = this.gatherInput();
+
+    if (Array.isArray(userInput)) {
+      const [title, description, people] = userInput;
+      console.log(title, description, people);
+    }
   }
 
-  private addListener() {
-    this.formEl.addEventListener("submit", this.handleSubmit);
+  private gatherInput(): [string, string, number] | void {
+    const title = this.titleInpElement.value;
+    const description = this.descriptionInpElement.value;
+    const people = this.peopleInpElement.value;
+
+    if (
+      title.trim().length === 0 ||
+      description.trim().length === 0 ||
+      people.trim().length === 0
+    ) {
+      alert("Invalid title, description or people!");
+      return;
+    }
+
+    return [title, description, +people];
   }
 }
 

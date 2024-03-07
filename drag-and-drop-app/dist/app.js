@@ -24,21 +24,37 @@ class Project {
         const importedNode = document.importNode(this.clientEl.content, true);
         this.formEl = importedNode.firstElementChild;
         this.formEl.id = "user-input";
-        this.titleInpEl = this.formEl.querySelector("#title");
-        this.descriptionInpEl = this.formEl.querySelector("#description");
-        this.peopleInpEl = this.formEl.querySelector("#people");
+        this.titleInpElement = this.formEl.querySelector("#title");
+        this.descriptionInpElement = this.formEl.querySelector("#description");
+        this.peopleInpElement = this.formEl.querySelector("#people");
         this.injectForm();
         this.addListener();
     }
     injectForm() {
         this.hostEl.insertAdjacentElement("afterbegin", this.formEl);
     }
-    handleSubmit(e) {
-        e.preventDefault();
-        console.log(this.titleInpEl.value);
-    }
     addListener() {
         this.formEl.addEventListener("submit", this.handleSubmit);
+    }
+    handleSubmit(e) {
+        e.preventDefault();
+        const userInput = this.gatherInput();
+        if (Array.isArray(userInput)) {
+            const [title, description, people] = userInput;
+            console.log(title, description, people);
+        }
+    }
+    gatherInput() {
+        const title = this.titleInpElement.value;
+        const description = this.descriptionInpElement.value;
+        const people = this.peopleInpElement.value;
+        if (title.trim().length === 0 ||
+            description.trim().length === 0 ||
+            people.trim().length === 0) {
+            alert("Invalid title, description or people!");
+            return;
+        }
+        return [title, description, +people];
     }
 }
 __decorate([
