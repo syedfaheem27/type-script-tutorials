@@ -221,6 +221,8 @@ function createAndSendData(title: string, id: number): CustomObj | undefined {
   return obj as CustomObj;
 }
 
+const ids: Readonly<number[]> = [1, 2, 3];
+
 //Unions vs Generics
 
 //With Generics - you lock in the type when you call a function or a method and have to work with

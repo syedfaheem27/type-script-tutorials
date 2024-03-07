@@ -124,6 +124,7 @@ function createAndSendData(title, id) {
     obj.createdAt = new Date();
     return obj;
 }
+const ids = [1, 2, 3];
 //Unions vs Generics
 //With Generics - you lock in the type when you call a function or a method and have to work with
 //the exact same type afterwards.
