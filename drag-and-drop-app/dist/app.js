@@ -5,6 +5,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+class ProjectState {
+    constructor() {
+        this.projects = [];
+        this.listeners = [];
+    }
+    static getInstance() {
+        if (this.instance)
+            return this.instance;
+        this.instance = new ProjectState();
+        return this.instance;
+    }
+    addItem(title, description, people) {
+        this.projects.push({
+            id: Math.random().toString(),
+            title,
+            description,
+            people,
+        });
+        this.execAllListeners();
+    }
+    execAllListeners() {
+        for (const listener of this.listeners)
+            listener(this.projects.slice());
+    }
+    addListener(fn) {
+        this.listeners.push(fn);
+    }
+}
+const projectState = ProjectState.getInstance();
 function validate(validationObj) {
     const value = validationObj.value;
     if (validationObj.required && value.toString().trim().length === 0)
@@ -39,6 +68,41 @@ function AutoBind(_, __, descriptor) {
     };
     return mod_descriptor;
 }
+class ProjectList {
+    constructor(type) {
+        this.type = type;
+        this.clientEl = document.getElementById("project-list");
+        this.hostEl = document.getElementById("app");
+        this.assignedProjects = [];
+        const importedNode = document.importNode(this.clientEl.content, true);
+        this.element = importedNode.firstElementChild;
+        this.element.id = `${this.type}-projects`;
+        projectState.addListener((projects) => {
+            this.assignedProjects = projects;
+            this.renderProjects();
+        });
+        this.injectContent();
+        this.renderContent();
+    }
+    injectContent() {
+        this.hostEl.insertAdjacentElement("beforeend", this.element);
+    }
+    renderContent() {
+        const title = `${this.type.toUpperCase()} PROJECTS`;
+        this.element.querySelector("h2").textContent = title;
+        const listId = `${this.type}-projects-list`;
+        this.element.querySelector("ul").id = listId;
+    }
+    renderProjects() {
+        const listEl = this.element.querySelector("ul");
+        listEl.innerHTML = "";
+        for (const project of this.assignedProjects) {
+            const el = document.createElement("li");
+            el.textContent = project.title;
+            listEl.appendChild(el);
+        }
+    }
+}
 class Project {
     constructor() {
         this.clientEl = document.getElementById("project-input");
@@ -64,6 +128,8 @@ class Project {
         if (Array.isArray(userInput)) {
             const [title, description, people] = userInput;
             console.log(title, description, people);
+            projectState.addItem(title, description, people);
+            this.clearInput();
         }
     }
     gatherInput() {
@@ -73,8 +139,7 @@ class Project {
         const titleValidationObj = {
             value: title,
             required: true,
-            minLength: 3,
-            maxLength: 10,
+            maxLength: 15,
         };
         const descValidationObj = {
             value: description,
@@ -85,7 +150,7 @@ class Project {
         const peopleValidationObj = {
             value: people,
             required: true,
-            max: 5,
+            max: 8,
             min: 1,
         };
         if (!validate(titleValidationObj) ||
@@ -96,9 +161,16 @@ class Project {
         }
         return [title, description, +people];
     }
+    clearInput() {
+        this.titleInpElement.value = "";
+        this.descriptionInpElement.value = "";
+        this.peopleInpElement.value = "";
+    }
 }
 __decorate([
     AutoBind
 ], Project.prototype, "handleSubmit", null);
 const projectInstance = new Project();
+const activePrjList = new ProjectList("active");
+const finishedPrjList = new ProjectList("finished");
 //# sourceMappingURL=app.js.map
