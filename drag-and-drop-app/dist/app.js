@@ -5,6 +5,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+class Project {
+    constructor(id, title, description, people) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.people = people;
+    }
+}
 class ProjectState {
     constructor() {
         this.projects = [];
@@ -17,12 +25,8 @@ class ProjectState {
         return this.instance;
     }
     addItem(title, description, people) {
-        this.projects.push({
-            id: Math.random().toString(),
-            title,
-            description,
-            people,
-        });
+        const newProject = new Project(Math.random.toString(), title, description, people);
+        this.projects.push(newProject);
         this.execAllListeners();
     }
     execAllListeners() {
@@ -103,7 +107,7 @@ class ProjectList {
         }
     }
 }
-class Project {
+class ProjectApp {
     constructor() {
         this.clientEl = document.getElementById("project-input");
         this.hostEl = document.getElementById("app");
@@ -169,8 +173,8 @@ class Project {
 }
 __decorate([
     AutoBind
-], Project.prototype, "handleSubmit", null);
-const projectInstance = new Project();
+], ProjectApp.prototype, "handleSubmit", null);
+const projectInstance = new ProjectApp();
 const activePrjList = new ProjectList("active");
 const finishedPrjList = new ProjectList("finished");
 //# sourceMappingURL=app.js.map

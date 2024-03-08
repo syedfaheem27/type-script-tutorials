@@ -1,9 +1,24 @@
+/*----------------------------*/
+//Individual Project
+
+class Project {
+  constructor(
+    public id: string,
+    public title: string,
+    public description: string,
+    public people: number
+  ) {}
+}
+/*----------------------------*/
+
 //Singleton Class for managing the state of the project
 
+type Listener = (items: Project[]) => void;
+
 class ProjectState {
-  private projects: any[] = [];
+  private projects: Project[] = [];
   private static instance: ProjectState;
-  private listeners: Function[] = [];
+  private listeners: Listener[] = [];
 
   private constructor() {}
 
@@ -15,12 +30,13 @@ class ProjectState {
   }
 
   addItem(title: string, description: string, people: number) {
-    this.projects.push({
-      id: Math.random().toString(),
+    const newProject = new Project(
+      Math.random.toString(),
       title,
       description,
-      people,
-    });
+      people
+    );
+    this.projects.push(newProject);
 
     //Calling all the listeners after adding an item
     this.execAllListeners();
@@ -30,7 +46,7 @@ class ProjectState {
     for (const listener of this.listeners) listener(this.projects.slice());
   }
 
-  addListener(fn: Function) {
+  addListener(fn: Listener) {
     this.listeners.push(fn);
   }
 }
@@ -112,7 +128,7 @@ class ProjectList {
   clientEl: HTMLTemplateElement;
   hostEl: HTMLDivElement;
   element: HTMLElement;
-  private assignedProjects: any[];
+  private assignedProjects: Project[];
 
   constructor(private type: "active" | "finished") {
     this.clientEl = document.getElementById(
@@ -126,7 +142,7 @@ class ProjectList {
     this.element = importedNode.firstElementChild as HTMLFormElement;
     this.element.id = `${this.type}-projects`;
 
-    projectState.addListener((projects: any[]) => {
+    projectState.addListener((projects: Project[]) => {
       this.assignedProjects = projects;
       this.renderProjects();
     });
@@ -160,10 +176,10 @@ class ProjectList {
   }
 }
 
-/*----------------------------*/
+/*------------------------------*/
 
-//Project Class
-class Project {
+//ProjectApp Class
+class ProjectApp {
   clientEl: HTMLTemplateElement;
   hostEl: HTMLDivElement;
   formEl: HTMLFormElement;
@@ -265,6 +281,6 @@ class Project {
   }
 }
 
-const projectInstance = new Project();
+const projectInstance = new ProjectApp();
 const activePrjList = new ProjectList("active");
 const finishedPrjList = new ProjectList("finished");
