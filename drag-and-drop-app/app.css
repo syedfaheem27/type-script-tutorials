@@ -91,6 +91,7 @@ button:active {
   box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.26);
   padding: 1rem;
   margin: 1rem;
+  cursor: move;
 }
 
 .projects li h2 {
@@ -124,4 +125,7 @@ button:active {
   padding: 1rem;
   border: 1px solid #ff0062;
   background: #f7f7f7;
+}
+.dragging {
+  background-color: rgba(128, 128, 128, 0.3);
 }

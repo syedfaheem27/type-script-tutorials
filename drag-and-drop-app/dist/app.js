@@ -39,9 +39,16 @@ class ProjectState extends State {
         return this.instance;
     }
     addItem(title, description, people) {
-        const newProject = new Project(Math.random.toString(), title, description, people, ProjectStatus.Active);
+        const newProject = new Project(Math.random().toString(), title, description, people, ProjectStatus.Active);
         this.projects.push(newProject);
         this.execAllListeners();
+    }
+    moveProject(prjId, status) {
+        const project = this.projects.find((prj) => prj.id === prjId);
+        if (project && project.status !== status) {
+            project.status = status;
+            this.execAllListeners();
+        }
     }
     execAllListeners() {
         for (const listener of this.listeners)
@@ -106,9 +113,23 @@ class ProjectItem extends Component {
     constructor(hostId, project) {
         super("single-project", hostId, false);
         this.project = project;
+        this.configure();
         this.renderContent();
     }
-    configure() { }
+    dragStartHandler(event) {
+        const el = event.target;
+        el.classList.add("dragging");
+        event.dataTransfer.setData("text/plain", el.id);
+        event.dataTransfer.effectAllowed = "move";
+    }
+    dragEndHandler(event) {
+        const el = event.target;
+        el.classList.remove("dragging");
+    }
+    configure() {
+        this.element.addEventListener("dragstart", this.dragStartHandler);
+        this.element.addEventListener("dragend", this.dragEndHandler);
+    }
     renderContent() {
         this.element.id = this.project.id;
         this.element.querySelector("h2").textContent = this.project.title;
@@ -116,6 +137,12 @@ class ProjectItem extends Component {
         this.element.querySelector("p").textContent = this.project.description;
     }
 }
+__decorate([
+    AutoBind
+], ProjectItem.prototype, "dragStartHandler", null);
+__decorate([
+    AutoBind
+], ProjectItem.prototype, "dragEndHandler", null);
 class ProjectList extends Component {
     constructor(type) {
         super("project-list", "app", false, `${type}-projects`);
@@ -124,7 +151,29 @@ class ProjectList extends Component {
         this.configure();
         this.renderContent();
     }
+    dragOverHandler(event) {
+        event.preventDefault();
+        const listEl = this.element.querySelector("ul");
+        listEl.classList.add("droppable");
+    }
+    dropHandler(event) {
+        if (event.dataTransfer && event.dataTransfer.types[0] !== "text/plain")
+            return;
+        if (event.dataTransfer) {
+            let id = event.dataTransfer.getData("text/plain");
+            projectState.moveProject(id, this.type === "active" ? ProjectStatus.Active : ProjectStatus.Finished);
+            const listEl = this.element.querySelector("ul");
+            listEl.classList.remove("droppable");
+        }
+    }
+    dragLeaveHandler(_) {
+        const listEl = this.element.querySelector("ul");
+        listEl.classList.remove("droppable");
+    }
     configure() {
+        this.element.addEventListener("dragover", this.dragOverHandler);
+        this.element.addEventListener("drop", this.dropHandler);
+        this.element.addEventListener("dragleave", this.dragLeaveHandler);
         projectState.addListener((projects) => {
             const identifier = this.type === "active" ? 0 : 1;
             const desiredProjects = projects.filter((proj) => proj.status === identifier);
@@ -141,10 +190,20 @@ class ProjectList extends Component {
     renderProjects() {
         const listEl = this.element.querySelector("ul");
         listEl.innerHTML = "";
-        for (const project of this.assignedProjects)
+        for (const project of this.assignedProjects) {
             new ProjectItem(listEl.id, project);
+        }
     }
 }
+__decorate([
+    AutoBind
+], ProjectList.prototype, "dragOverHandler", null);
+__decorate([
+    AutoBind
+], ProjectList.prototype, "dropHandler", null);
+__decorate([
+    AutoBind
+], ProjectList.prototype, "dragLeaveHandler", null);
 class ProjectApp extends Component {
     constructor() {
         super("project-input", "app", true, "user-input");
