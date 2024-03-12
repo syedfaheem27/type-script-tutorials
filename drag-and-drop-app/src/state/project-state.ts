@@ -1,6 +1,5 @@
-///<reference path="./global-state.ts"/>
-import { State } from "./global-state.js";
-import { Project, ProjectStatus } from "../models/project.js";
+import { State } from "./global-state";
+import { Project, ProjectStatus } from "../models/project";
 
 //Singleton Class for managing the state of the project
 
