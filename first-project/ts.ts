@@ -1,4 +1,6 @@
-const button = document.querySelector("button")! as HTMLButtonElement;
+const button = document.querySelector("button")! as HTMLButtonElement; //type-casting
+// const button_1 = <HTMLButtonElement>document.querySelector("button"); //type-casting - alternate way
+
 const input1 = document.getElementById("num1")! as HTMLInputElement;
 const input2 = document.getElementById("num2")! as HTMLInputElement;
 

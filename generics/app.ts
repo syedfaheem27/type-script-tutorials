@@ -141,15 +141,23 @@ M{
  }
  */
 
-//Here key in obj won't work because we need to provide an index
-//signature so that it can be indexed with a string
+//Here key in obj in extractAndGenerate function only won't work because
+//we need to provide an index signature so that it can be indexed with a
+//string. That's why we had to create an interface CustomObj which can be
+//indexed with a string
+
+//Problematic code
+// function extractAndGenerate(obj: object, key: string): string {
+//   if (key in obj) return obj[key];
+
+//   return "asasa";
+// }
 
 //Solution
 interface CustomObj {
   [key: string]: string;
 }
 
-//That's why it's giving an error
 function extractAndGenerate(obj: CustomObj, key: string): string {
   if (key in obj) return obj[key];
 
@@ -166,7 +174,7 @@ function extractAndConvert<T, U extends keyof T>(obj: T, key: U) {
 //Generic classes
 
 //Here the problem with only having a generic type without extending a primitive data type
-//is that with objects, removeItem method won't work as it is a referrence type
+//is that with objects, removeItem method won't work as objects are referrence types
 //So, we need to implicitly extend the generic type
 class CustomStorage<T extends number | string | boolean> {
   private data: T[] = [];
@@ -201,6 +209,7 @@ console.log(storageObjOne.getData());
 //Imagine a scenario where we want to build an object that needs to be sent as a payload
 //to an API and thus we need to build it incrementally after each of the field is verified
 
+//shape of object to be sent
 interface CutsomObject {
   title: string;
   id: number;
@@ -226,6 +235,6 @@ const ids: Readonly<number[]> = [1, 2, 3];
 //Unions vs Generics
 
 //With Generics - you lock in the type when you call a function or a method and have to work with
-//the exact same type afterwards.
+//the exact same type afterwards : extra type safety
 
 //However, with unions you are free to choose any of the provided type

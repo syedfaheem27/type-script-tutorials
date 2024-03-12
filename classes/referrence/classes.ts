@@ -18,6 +18,7 @@ abstract class Department {
   abstract printEmployee(): void;
 }
 
+//Singleton class
 class ITDept extends Department {
   private admins: string[];
   private static instance: ITDept;

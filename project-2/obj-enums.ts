@@ -29,7 +29,7 @@ const person = {
 // person.role.push("aadad");
 // console.log(person.role);
 
-//However, changing the length directly will throw an erro
+//However, changing the length directly will throw an error
 // person.role=[1,'user','admin']
 
 if (person.role === Role.ADMIN) console.log("isAdmin");
