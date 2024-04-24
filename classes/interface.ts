@@ -18,6 +18,10 @@ class Person implements Human, Greetable {
   greet(phrase: string) {
     console.log(phrase + " " + this.name);
   }
+
+  walk() {
+    console.log("walk");
+  }
 }
 // let user1: Person & Greetable;
 
@@ -26,6 +30,8 @@ class Person implements Human, Greetable {
 //   greet(phrase: string) {
 //     console.log(phrase + " " + this.name);
 //   },
+//   age: 3,
+//   walk() {},
 // };
 // console.log(user1);
 

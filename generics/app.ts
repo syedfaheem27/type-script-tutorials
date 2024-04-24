@@ -46,13 +46,15 @@ Array<number> => number[]
 Promise<string> => a promise that resolves to a value which is a string
 */
 
-const res: Promise<string> = new Promise((resolve, reject) => {
+const res: Promise<string | number> = new Promise((resolve, reject) => {
   setTimeout(() => {
     resolve("23");
   }, 1000);
 });
 
-res.then((data) => console.log(data.split("")));
+res.then((data) => {
+  if (typeof data === "string") console.log(data.split(""));
+});
 
 /*-------------------------------*/
 
@@ -102,6 +104,9 @@ console.log(merged_obj4.profession?.[2]);
 /*----------------------------*/
 
 //Constraints
+
+//Allow you to narrow down the concrete types that may be used in
+//a generic function
 function mergeII<T extends object, U extends object>(a: T, b: U) {
   return { ...a, ...b };
 }
@@ -147,13 +152,13 @@ M{
 //indexed with a string
 
 //Problematic code
-// function extractAndGenerate(obj: object, key: string): string {
+// function extractAndGenerateI(obj: object, key: string): string {
 //   if (key in obj) return obj[key];
 
 //   return "asasa";
 // }
 
-//Solution
+//Solution -1
 interface CustomObj {
   [key: string]: string;
 }
@@ -167,6 +172,18 @@ function extractAndGenerate(obj: CustomObj, key: string): string {
 //The keyof operator takes an object type and produces a string or numeric literal union of its keys.
 function extractAndConvert<T, U extends keyof T>(obj: T, key: U) {
   return "value " + obj[key];
+}
+
+//Solution -2
+
+//Record - inbuilt utility type provided by typescript
+function extractAndGenerateIII<T extends Record<string, any>>(
+  obj: T,
+  key: string
+): string {
+  if (key in obj) return obj[key];
+
+  return "asasa";
 }
 
 /*----------------------------*/
@@ -217,6 +234,8 @@ interface CutsomObject {
 }
 
 function createAndSendData(title: string, id: number): CustomObj | undefined {
+  //The partial Generic utility type makes all the fields
+  //optional
   let obj: Partial<CutsomObject> = {};
 
   if (title === "") return;

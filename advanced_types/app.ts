@@ -49,7 +49,10 @@ class Trucks implements Truck {
 function useVehicle(vehicle: Car | Truck): void {
   vehicle.drive();
 
-  //   if ("loadCargo" in vehicle) vehicle.loadCargo(1000);
+  //in operator narrowing
+  if ("loadCargo" in vehicle) vehicle.loadCargo(1000);
+
+  //instanceof narrowing
   if (vehicle instanceof Trucks) vehicle.loadCargo(1000);
 }
 
@@ -67,6 +70,18 @@ type employee = {
 
 type seniorEmployee = admin & employee;
 type newemp = admin | employee;
+
+// const f: newemp = {
+//   name: "faheem",
+//   privileges: ["*"],
+//   post: "CTO",
+// };
+
+// const e: seniorEmployee = {
+//   name: "faheem",
+//   privileges: ["*"],
+//   post: "CTO",
+// };
 
 function printEmployeeInfo(emp: newemp) {
   console.log(emp.name);
@@ -122,7 +137,12 @@ let stack: number[] = [1, 2, 3];
 
 let stack_2: number[] = [];
 
+//Approach 1
 stack_2.push(stack.pop()!);
+
+//Approach 2
+let el = stack.pop();
+if (el) stack_2.push(el);
 
 //example
 
@@ -149,6 +169,7 @@ interface ErrorContainer {
 const obj: ErrorContainer = {
   error: "An error occurred",
   "erro-2": "asdsda",
+  2: "false",
 };
 
 /*------------------------------------*/

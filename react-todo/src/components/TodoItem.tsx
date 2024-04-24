@@ -6,7 +6,7 @@ interface Item {
 
 const TodoItem: React.FC<Item> = ({ item, onDeleteTodo }) => {
   return (
-    <li className="list-item">
+    <li className="list-item" draggable="true">
       <span>{item}</span>
       <button onClick={onDeleteTodo}>Delete</button>
     </li>

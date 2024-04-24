@@ -18,7 +18,14 @@ enum Role {
   GUIDE,
 }
 
-const person = {
+type tu = [string, string];
+
+const person: {
+  name: string;
+  age: number;
+  hobbies: tu;
+  role: Role;
+} = {
   name: "faheem",
   age: 25,
   hobbies: ["football", "reading"],
@@ -28,6 +35,9 @@ const person = {
 //push is an exception with tuples
 // person.role.push("aadad");
 // console.log(person.role);
+
+// person.hobbies.push("hhh")
+// person.hobbies.length=6
 
 //However, changing the length directly will throw an error
 // person.role=[1,'user','admin']

@@ -1,6 +1,6 @@
 //Decorators - A beautiful design pattern
 
-//1. Class Decorators - run when a class is deined and not when it is instantiated
+//1. Class Decorators - run when a class is defined and not when it is instantiated
 
 /*
 function Logger(fn: Function) {

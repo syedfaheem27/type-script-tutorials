@@ -61,3 +61,44 @@ const it = new ITDept(1, ["faheem"]);
 
 // it.mostRecentAdmin = "farhan";
 console.log(it);
+it.describe();
+
+/*-----------------------------------*/
+
+//Practice writing an abstract class and then inheriting from it
+
+abstract class CV {
+  protected readonly profile: string;
+  protected name: string;
+
+  constructor(name: string, profile: string) {
+    this.name = name;
+    this.profile = profile;
+  }
+
+  abstract defineSkills<T>(skills: T[]): void;
+  abstract defineYourself(): void;
+}
+
+class Developer extends CV {
+  constructor(name: string) {
+    super(name, "developer");
+  }
+
+  defineSkills<T>(skills: T[]): void {
+    console.log(`The skills that i have are :`);
+    skills.forEach((skill) => {
+      console.log(skill);
+    });
+  }
+
+  defineYourself(): void {
+    console.log(
+      `Hi my name is ${this.name} and i am a professional ${this.profile} with a wide spectrum of skills.`
+    );
+  }
+}
+
+const faheem = new Developer("Faheem");
+faheem.defineSkills(["HTML", "CSS", "JS"]);
+faheem.defineYourself();
