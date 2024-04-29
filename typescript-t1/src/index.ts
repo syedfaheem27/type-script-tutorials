@@ -54,4 +54,18 @@ let filteredArrays = filter(nums, (item: number) => {
   return item < 3;
 });
 
-console.log(filteredArrays);
+type map = <T, U>(items: T[], predicate: (item: T) => U) => U[];
+
+const nn: map = (items, predicate) => {
+  let arr = [];
+
+  for (let item of items) {
+    arr.push(predicate(item));
+  }
+
+  return arr;
+};
+
+const transformedNums = nn(nums, (num: number) => {
+  return num * 2;
+});
